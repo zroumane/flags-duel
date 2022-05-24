@@ -9,9 +9,14 @@ const routes = [
     component: HomeView,
   },
   {
-    path: "/duel",
+    path: "/duel/:id",
     name: "duel",
     component: DuelView
+  },
+  {
+    name: "notfound",
+    path: "/:pathMatch(.*)*",
+    redirect: {name: "home"}
   },
 ];
 
