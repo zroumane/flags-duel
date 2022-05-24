@@ -1,24 +1,23 @@
-# a
+# flags-duel
 
-## Project setup
+A duel game where you have to find the country associated with a flag. You can play it on [Flags Duel](https://flags-duel.zph.ovh).
+
+## Usage
 ```
 yarn install
 ```
 
-### Compiles and hot-reloads for development
+### Development
 ```
-yarn serve
+# server side (Express.js)
+yarn dev
+
+# client side (Vue.js + Router)
+yarn watch
 ```
 
-### Compiles and minifies for production
+### Production
 ```
-yarn build
+yarn start
 ```
-
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+or you can use docker
