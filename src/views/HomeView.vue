@@ -16,7 +16,7 @@
       value="Join"
     />
   </div>
-  <div v-if="duelCount">
+  <div>
     <p>There is {{ duelCount }} duel(s) in progress !</p>
   </div>
 </template>
@@ -30,15 +30,15 @@ const router = useRouter();
 
 const gameId = ref(null);
 const fetching = ref(false);
-const duelCount = ref(false);
+const duelCount = ref(0);
 
-fetchApi("duel", "GET", (rep, data) => {
+fetchApi("duel", "GET", (data) => {
   duelCount.value = data.count;
 });
 
 const newGame = () => {
   fetching.value = true;
-  fetchApi("duel", "POST", (rep, data) => {
+  fetchApi("duel", "POST", (data) => {
     if (data.id) {
       joinGame(data.id);
     } else {
