@@ -1,11 +1,23 @@
 const path = require('path');
 const express = require('express');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 const cors = require('cors')
+const history = require('connect-history-api-fallback');
 
 const app = express();
+app.use(cookieParser());
+app.use(session({
+  secret: "secreat", 
+  saveUninitialized: true, 
+  resave: false}));
+app.use(cors({credentials: true, origin: '*'}));
 
-app.use(cors());
-app.use('/', express.static(path.join(__dirname, 'dist')));
+if (process.env.NODE_ENV != "development") {
+  console.log("Prod : serving static files")
+  app.use(history());
+  app.use('/', express.static(path.join(__dirname, 'dist')));
+}
 
 let duels = new Map()
 
@@ -33,13 +45,24 @@ app.get('/api/duel', function (req, res) {
 
 app.post('/api/duel', function (req, res) {
   let id = uniqueId()
-  duels.set(id, {})
+  duels.set(id, {
+    state: "CONFIG",
+    config: {},
+    players: {},
+    round: {}
+  })
   console.log(duels);
   res.json({data:{id: id}});
 })
 
 app.get('/api/duel/:id', function (req, res) {
-  // res.json({data:{id: "ouioui"}});
+  console.log(req.session.id);
+  let duel = duels.get(req.params.id)
+  if(!duel) {
+    res.status(404).send("No Duel")
+  }else{
+    res.send({data: duel})
+  }
 })
 
 const port = process.env.PORT || 3000

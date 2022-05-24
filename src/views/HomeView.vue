@@ -11,7 +11,7 @@
     <input v-model="gameId" type="text" />
     <input
       :disabled="fetching"
-      @click="hanfleJoin"
+      @click="handleJoin"
       type="submit"
       value="Join"
     />
@@ -32,13 +32,13 @@ const gameId = ref(null);
 const fetching = ref(false);
 const duelCount = ref(false);
 
-fetchApi("duel", "GET", (data) => {
+fetchApi("duel", "GET", (rep, data) => {
   duelCount.value = data.count;
 });
 
 const newGame = () => {
   fetching.value = true;
-  fetchApi("duel", "POST", (data) => {
+  fetchApi("duel", "POST", (rep, data) => {
     if (data.id) {
       joinGame(data.id);
     } else {
@@ -47,7 +47,7 @@ const newGame = () => {
   });
 };
 
-const hanfleJoin = () => {
+const handleJoin = () => {
   if (gameId.value != null) {
     joinGame(gameId.value);
   }

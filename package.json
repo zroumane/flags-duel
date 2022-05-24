@@ -2,14 +2,15 @@
   "name": "flags-duel",
   "version": "1.0.0",
   "scripts": {
-    "dev": "nodemon server.js",
+    "dev": "NODE_ENV=development nodemon server.js",
     "watch": "vue-cli-service serve",
     "start": "vue-cli-service build && node server.js"
   },
   "dependencies": {
     "connect-history-api-fallback": "^1.6.0",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "uuid": "^8.3.2",
+    "express-session": "^1.17.3",
     "vue": "^3.2.13",
     "vue-router": "^4.0.3"
   },
