@@ -31,7 +31,6 @@ const sessionMiddleware = session({
 
 app.use(cookieParser());
 app.use(sessionMiddleware);
-
 app.use(cors(corsOption));
 
 if (process.env.NODE_ENV != "development") {
@@ -68,11 +67,15 @@ app.post('/api/duel', (req, res) => {
   let id = uniqueId()
   duels.set(id, {
     state: "CONFIG",
-    config: {},
+    config: {
+      category: "0",
+      round: 10
+    },
     players: [
       {
-        id: req.session.id,
-        point: 0
+        session: req.session.id,
+        socket: null,
+        score: 0
       }
     ],
     round: {}
@@ -81,18 +84,13 @@ app.post('/api/duel', (req, res) => {
 })
 
 app.get('/api/duel/:id', (req, res) => {
-  console.log("api", req.session.id);
-
   let duel = duels.get(req.params.id)
 
   if(!duel) {
     res.json({data: "notfound"})
   }
-  else if (duel.state == "PLAYING"){
-    res.json({data: "playing"})
-  }
   else {
-    if (duel.players.find(p => p.id == req.session.id)){
+    if (duel.players.find(p => p.session == req.session.id)){
       res.json({data: "connectig"})
     } else {
       if (duel.players.length == 2){
@@ -100,8 +98,9 @@ app.get('/api/duel/:id', (req, res) => {
       }
       else {
         duel.players.push({
-          id: req.session.id,
-          point: 0
+          session: req.session.id,
+          socket: null,
+          score: 0
         })
         res.json({data: "connecting"})
       }
@@ -112,9 +111,79 @@ app.get('/api/duel/:id', (req, res) => {
 const io = new Server(server, {cors: corsOption});
 io.use(wrap(sessionMiddleware));
 
+const syncDuel = (id, duel) => {
+  if(duel){
+    io.to(id).emit("duel",{
+      state: duel.state,
+      config: duel.config,
+      players: duel.players
+    })
+  }
+}
+
+
 io.on('connection', (socket) => {
-  console.log("socket", socket.request.session.id);
-  socket.emit('aaaa', {message: 'a new client connected'})
+  let duel, id;
+  socket.send("join", (gameId) => {
+    id = gameId
+    duel = duels.get(id)
+    if(duel){
+      let player = duel.players.find(p => p.session == socket.request.session.id)
+      if (!player) {
+        socket.disconnect()
+      } else {
+        player.socket = socket.id
+        socket.join(id)
+        syncDuel(id, duel)
+      }
+    }
+  });
+  socket.on('disconnect', () => {
+    if(duel && duel.state != "PLAYING") {
+      duel.players = duel.players.filter(p => p.socket != socket.id)
+      if (duel.state == "FINISHED"){
+        duel.state = "CONFIG"
+      }
+      syncDuel(id, duel)
+    }
+  })
+  socket.on('message', (msg) => {
+    if(msg == "start"){
+      if(duel && duel.state == "CONFIG"){
+        if(duel.players.length != 2){
+          socket.emit('error', "Not enough players !")
+        }else{
+          duel.state = "PLAYING"
+          syncDuel(id, duel)
+          setTimeout(() => {
+            duel.players[1].score++
+            duel.state = "FINISHED"
+            duel.players = duel.players.filter((p) => {
+              if (io.sockets.adapter.rooms.get(id).has(p.socket)) return true
+              else return false
+            })
+            syncDuel(id, duel)
+          }, 3000);
+        }
+      }
+    }
+    else if (msg == "restart"){
+      if(duel && duel.state == "FINISHED"){
+        duel.state = "CONFIG"
+        duel.players = duel.players.map((p) => {
+          p.score = 0
+          return p
+        })
+        syncDuel(id, duel)
+      }
+    }
+  })
+  socket.on('config', (config) => {
+    if(duel && duel.state == "CONFIG"){
+      duel.config = config
+    }
+    syncDuel(id, duel)
+  })
 })
 
 const port = process.env.PORT || 3000

@@ -1,24 +1,28 @@
 const STATE = ["CONFIG", "PLAYING", "FINISHED"]
 
 type Duel = {
-  id: string,
-  state: string
+  state: "CONFIG" | "PLAYING" | "FINISHED"
   players: User[]
+  round: Round[]
+  config: {
+    category: string
+    round: number
+  }
 }
 
 type Round = {
-  flag: string
+  country: Country
   choices: Country[]
 }
 
 type Country = {
-  name: string
   id: number
+  name: string
   continent: string
   flag_base64: string
 }
 
 type User = {
-  pseudo: string,
   id: string
+  point: number,
 }
