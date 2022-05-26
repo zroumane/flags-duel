@@ -1,4 +1,3 @@
-import { io } from '../app.js'
 import store from './store.js'
 
 export default (socket) => {
@@ -22,5 +21,9 @@ export default (socket) => {
 
   socket.on('config', (config) => {
     if (duel) duel.newConfig(config)
+  })
+
+  socket.on('reply', (answer) => {
+    if (duel) duel.reply(socket.id, answer)
   })
 }

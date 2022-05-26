@@ -1,4 +1,5 @@
-import path from 'path'
+import { fileURLToPath } from 'url'
+import path, { dirname } from 'path'
 import express from 'express'
 
 import { createServer } from 'http'
@@ -34,12 +35,6 @@ app.use(cookieParser())
 app.use(sessionMiddleware)
 app.use(cors(corsOption))
 
-if (process.env.NODE_ENV != 'development') {
-  console.log('Prod : serving static files')
-  app.use(history())
-  app.use('/', express.static(path.join(__dirname, '../dist')))
-}
-
 const io = new Server(server, { cors: corsOption })
 io.use(wrap(sessionMiddleware))
 
@@ -48,6 +43,16 @@ app.use('/api', apiRoute)
 
 import connection from './src/io.js'
 io.on('connection', (socket) => connection(socket))
+
+if (process.env.NODE_ENV != 'development') {
+  app.use(history())
+  app.use(
+    express.static(
+      path.join(dirname(fileURLToPath(import.meta.url)), '/../dist')
+    )
+  )
+  console.log('Prod : serving static files')
+}
 
 const port = process.env.PORT || 3000
 

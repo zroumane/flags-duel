@@ -1,16 +1,19 @@
 <template>
-  <div class="head" v-if="props.players.length == 2">
+  <div class="head">
     <div>Player 1</div>
-    <div>{{ props.players[0].score }}</div>
+    <div>{{ duel.players[0].score }}</div>
     <div>:</div>
-    <div>{{ props.players[1].score }}</div>
+    <div>{{ duel.players[1].score }}</div>
     <div>Player 2</div>
   </div>
-  <div v-else>Waiting for second player ...</div>
 </template>
 
 <script setup>
-const props = defineProps(['players'])
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+const store = useStore()
+
+const duel = computed(() => store.state.duel)
 </script>
 
 <style scoped>

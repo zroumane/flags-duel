@@ -1,69 +1,53 @@
 <template>
-  <div v-if="message">
-    <h2>{{ message }}</h2>
-    <input @click="router.go()" type="button" value="Refresh" />
-  </div>
-  <div v-else>
-    <h2 v-if="!state">Loading ...</h2>
+  <div>
+    <div v-if="message">
+      <h2>{{ message }}</h2>
+      <input @click="router.go()" type="button" value="Refresh" />
+    </div>
     <div v-else>
-      <div>
-        {{ state }}
-      </div>
-      <Players :players="players" />
-      <Config
-        v-if="state == 'CONFIG'"
-        @sendSocket="sendSocket"
-        :config="config" />
-      <div v-if="state == 'FINISHED'">
-        <h2 v-if="players && players.length == 2">{{ result }}</h2>
-        <input
-          @click="sendSocket('message', 'restart')"
-          type="submit"
-          value="Restart" />
+      <h2 v-if="!duel.state">Loading ...</h2>
+      <div v-else>
+        <div v-if="duel.state == 'CONFIG'">
+          <ConfigPanel />
+        </div>
+        <div v-else-if="duel.state == 'PLAYING'">
+          <ScoreBoard />
+          <QuestionPanel />
+        </div>
+        <div v-else-if="duel.state == 'FINISHED'">
+          <EndPanel />
+        </div>
       </div>
     </div>
-  </div>
-  <div v-if="error">
-    <h2 class="error">{{ error }}</h2>
+    <div v-if="error">
+      <h2 class="error">{{ error }}</h2>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed, ref, toRaw, watch } from 'vue'
+import { computed, ref } from 'vue'
+import { useStore } from 'vuex'
 import { useRoute, onBeforeRouteLeave, useRouter } from 'vue-router'
 import { io } from 'socket.io-client'
 import api from '../helpers/api'
-import Config from '../components/Config.vue'
-import Playing from '../components/Playing.vue'
-import Players from '../components/Players.vue'
+import ConfigPanel from '../components/ConfigPanel.vue'
+import QuestionPanel from '../components/QuestionPanel.vue'
+import ScoreBoard from '../components/ScoreBoard.vue'
+import EndPanel from '../components/EndPanel.vue'
 
 const route = useRoute()
 const router = useRouter()
+const store = useStore()
 
 const error = ref(null)
 const id = ref(route.params.id)
 const message = ref(null)
 
-const state = ref(null)
-const config = ref(null)
-const players = ref([])
-
-const result = computed(() => {
-  if (players.value.length == 2) {
-    if (players.value[0].score == players.value[1].score) {
-      return 'Draft !'
-    } else if (
-      players.value.reduce((p, c) => (p.value > c.value ? p : c)).socket ==
-      socket.id
-    ) {
-      return 'You won !'
-    } else {
-      return 'You lost !'
-    }
-  }
+const socket = computed(() => store.state.socket)
+const duel = computed(() => {
+  return store.state.duel || { state: null, players: null, config: null }
 })
-
-let socket
 
 api(`duel/${id.value}`, 'GET', (data) => {
   if (data == 'notfound') {
@@ -73,40 +57,40 @@ api(`duel/${id.value}`, 'GET', (data) => {
   } else if (data == 'full') {
     message.value = `Duel ${id.value} is full.`
   } else {
-    socket = io('ws://localhost:3000', { withCredentials: true })
-    socket.on('connect', () => {
-      console.log('Socket connection etablished with id', socket.id)
+    store.commit(
+      'setSocket',
+      io('ws://localhost:3000', { withCredentials: true })
+    )
+
+    socket.value.on('connect', () => {
+      console.log('Socket connection etablished with id', socket.value.id)
     })
-    socket.on('message', (msg, cb) => {
-      if (msg == 'join') {
-        cb(id.value)
-      }
+
+    socket.value.on('message', (msg, send) => {
+      if (msg == 'join') send(id.value)
     })
-    socket.on('disconnect', () => {
+
+    socket.value.on('disconnect', () => {
       message.value = 'No socket connection'
+      store.commit('setDuel', {})
     })
 
-    socket.on('duel', (data) => {
-      console.log(data)
+    socket.value.on('duel', (duel) => {
       error.value = ''
-      state.value = data.state
-      config.value = data.config
-      players.value = data.players
+      store.commit('setDuel', duel)
     })
 
-    socket.on('error', (err) => {
+    socket.value.on('error', (err) => {
       error.value = err
     })
   }
 })
 
-const sendSocket = (eventName, data) => {
-  socket.emit(eventName, data)
-}
-
 onBeforeRouteLeave(() => {
-  if (socket) {
-    socket.disconnect()
+  if (socket.value) {
+    socket.value.disconnect()
+    store.commit('setDuel', null)
+    store.commit('setSocket', null)
   }
   return true
 })

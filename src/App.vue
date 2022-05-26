@@ -1,8 +1,10 @@
 <template>
-  <div class="header">
-    <span>Flags Duel</span>
+  <div>
+    <div class="header">
+      <span>Flags Duel</span>
+    </div>
+    <router-view />
   </div>
-  <router-view />
 </template>
 
 <style>

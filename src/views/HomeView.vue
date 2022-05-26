@@ -1,21 +1,23 @@
 <template>
   <div>
-    <input
-      :disabled="fetching"
-      @click="newGame"
-      type="button"
-      value="New Game" />
-  </div>
-  <div>
-    <input v-model="gameId" type="text" />
-    <input
-      :disabled="fetching"
-      @click="handleJoin"
-      type="submit"
-      value="Join" />
-  </div>
-  <div>
-    <p>There is {{ duelCount }} duel(s) in progress !</p>
+    <div>
+      <input
+        :disabled="fetching"
+        @click="newGame"
+        type="button"
+        value="New Game" />
+    </div>
+    <div>
+      <input v-model="gameId" type="text" />
+      <input
+        :disabled="fetching"
+        @click="handleJoin"
+        type="submit"
+        value="Join" />
+    </div>
+    <div>
+      <p>There is {{ duelCount }} duel(s) in progress !</p>
+    </div>
   </div>
 </template>
 
