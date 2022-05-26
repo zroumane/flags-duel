@@ -1,5 +1,6 @@
 import { uniqueId } from './helpers.js'
 import { io } from '../app.js'
+import round from './round.js'
 
 let duels = []
 
@@ -12,7 +13,7 @@ class Duel {
       category: 0,
       round: 10,
     }
-    this.round = []
+    this.rounds = []
   }
 
   newConfig(n) {
@@ -49,21 +50,22 @@ class Duel {
     }
   }
 
-  connect(sessionId, socketID) {
-    let player = this.players.find((p) => p.session == sessionId)
+  connect(socket) {
+    let player = this.players.find(
+      (p) => p.session == socket.request.session.id
+    )
     if (player) {
-      player.socket = socketID
+      player.socket = socket.id
+      socket.join(this.id)
       this.sync()
-    }
-    return player
+    } else socket.disconnect()
   }
 
   disconnect(socketId) {
     if (this.state != 'PLAYING') {
       this.players = this.players.filter((p) => p.socket != socketId)
-      if (this.state == 'FINISHED') {
-        this.restart()
-      }
+      if (this.players.length == 0) store.remove(this.id)
+      else if (this.state == 'FINISHED') this.restart()
     }
   }
 
@@ -72,6 +74,8 @@ class Duel {
       if (this.players.length != 2)
         io.to(this.id).emit('error', 'Not enough players !')
       else {
+        this.rounds = round(this.config)
+        console.log(this.rounds)
         this.state = 'PLAYING'
         this.sync()
         setTimeout(() => {
@@ -85,10 +89,15 @@ class Duel {
   finish() {
     this.state = 'FINISHED'
     this.players = this.players.filter((p) => {
-      if (io.sockets.adapter.rooms.get(this.id).has(p.socket)) return true
+      if (
+        io.sockets.adapter.rooms.has(this.id) &&
+        io.sockets.adapter.rooms.get(this.id).has(p.socket)
+      )
+        return true
       else return false
     })
     this.sync()
+    if (this.players.length == 0) store.remove(this.id)
   }
 
   restart() {
@@ -115,7 +124,7 @@ class Duel {
   }
 }
 
-export default {
+const store = {
   has: (id) => {
     return duels.find((d) => d.id == id) ? true : false
   },
@@ -128,7 +137,13 @@ export default {
   get: (id) => {
     return duels.find((d) => d.id == id)
   },
+  remove: (id) => {
+    duels = duels.filter((d) => d.id != id)
+    console.log(duels)
+  },
   size: () => {
     return duels.length
   },
 }
+
+export default store

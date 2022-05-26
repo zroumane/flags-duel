@@ -6,12 +6,7 @@ export default (socket) => {
 
   socket.send('join', (gameId) => {
     duel = store.get(gameId)
-    if (duel) {
-      duel.connect(socket.request.session.id, socket.id)
-        ? socket.join(duel.id)
-        : socket.disconnect()
-      duel.sync()
-    }
+    if (duel) duel.connect(socket)
   })
 
   socket.on('disconnect', () => {
