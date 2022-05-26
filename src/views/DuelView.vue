@@ -13,15 +13,13 @@
       <Config
         v-if="state == 'CONFIG'"
         @sendSocket="sendSocket"
-        :config="config"
-      />
+        :config="config" />
       <div v-if="state == 'FINISHED'">
         <h2 v-if="players && players.length == 2">{{ result }}</h2>
         <input
           @click="sendSocket('message', 'restart')"
           type="submit"
-          value="Restart"
-        />
+          value="Restart" />
       </div>
     </div>
   </div>
@@ -31,86 +29,87 @@
 </template>
 
 <script setup>
-import { computed, ref, toRaw, watch } from "vue";
-import { useRoute, onBeforeRouteLeave, useRouter } from "vue-router";
-import { io } from "socket.io-client";
-import fetchApi from "../lib/fetchApi";
-import Config from "../components/Config.vue";
-import Playing from "../components/Playing.vue";
-import Players from "../components/Players.vue";
+import { computed, ref, toRaw, watch } from 'vue'
+import { useRoute, onBeforeRouteLeave, useRouter } from 'vue-router'
+import { io } from 'socket.io-client'
+import api from '../helpers/api'
+import Config from '../components/Config.vue'
+import Playing from '../components/Playing.vue'
+import Players from '../components/Players.vue'
 
-const route = useRoute();
-const router = useRouter();
+const route = useRoute()
+const router = useRouter()
 
-const error = ref(null);
-const id = ref(route.params.id);
-const message = ref(null);
+const error = ref(null)
+const id = ref(route.params.id)
+const message = ref(null)
 
-const state = ref(null);
-const config = ref(null);
-const players = ref([]);
+const state = ref(null)
+const config = ref(null)
+const players = ref([])
 
 const result = computed(() => {
   if (players.value.length == 2) {
     if (players.value[0].score == players.value[1].score) {
-      return "Draft !";
+      return 'Draft !'
     } else if (
       players.value.reduce((p, c) => (p.value > c.value ? p : c)).socket ==
       socket.id
     ) {
-      return "You won !";
+      return 'You won !'
     } else {
-      return "You lost !";
+      return 'You lost !'
     }
   }
-});
+})
 
-let socket;
+let socket
 
-fetchApi(`duel/${id.value}`, "GET", (data) => {
-  if (data == "notfound") {
-    message.value = "This duel doesn't exist.";
-  } else if (data == "playing") {
-    message.value = `Duel ${id.value} already start.`;
-  } else if (data == "full") {
-    message.value = `Duel ${id.value} is full.`;
+api(`duel/${id.value}`, 'GET', (data) => {
+  if (data == 'notfound') {
+    message.value = "This duel doesn't exist."
+  } else if (data == 'playing') {
+    message.value = `Duel ${id.value} already start.`
+  } else if (data == 'full') {
+    message.value = `Duel ${id.value} is full.`
   } else {
-    socket = io("ws://localhost:3000", { withCredentials: true });
-    socket.on("connect", () => {
-      console.log("Socket connection etablished with id", socket.id);
-    });
-    socket.on("message", (msg, cb) => {
-      if (msg == "join") {
-        cb(id.value);
+    socket = io('ws://localhost:3000', { withCredentials: true })
+    socket.on('connect', () => {
+      console.log('Socket connection etablished with id', socket.id)
+    })
+    socket.on('message', (msg, cb) => {
+      if (msg == 'join') {
+        cb(id.value)
       }
-    });
-    socket.on("disconnect", () => {
-      message.value = "No socket connection";
-    });
+    })
+    socket.on('disconnect', () => {
+      message.value = 'No socket connection'
+    })
 
-    socket.on("duel", (data) => {
-      error.value = "";
-      state.value = data.state;
-      config.value = data.config;
-      players.value = data.players;
-    });
+    socket.on('duel', (data) => {
+      console.log(data)
+      error.value = ''
+      state.value = data.state
+      config.value = data.config
+      players.value = data.players
+    })
 
-    socket.on("error", (err) => {
-      error.value = err;
-    });
+    socket.on('error', (err) => {
+      error.value = err
+    })
   }
-});
+})
 
 const sendSocket = (eventName, data) => {
-  socket.emit(eventName, data);
-};
+  socket.emit(eventName, data)
+}
 
 onBeforeRouteLeave(() => {
   if (socket) {
-    socket.disconnect();
+    socket.disconnect()
   }
-  return true;
-});
+  return true
+})
 </script>
 
 <style scoped>

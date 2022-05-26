@@ -10,9 +10,8 @@
 </template>
 
 <script setup>
-const props = defineProps(["players"]);
+const props = defineProps(['players'])
 </script>
-
 
 <style scoped>
 .head {

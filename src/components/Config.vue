@@ -11,27 +11,27 @@
 </template>
 
 <script setup>
-import { watch } from "vue";
+import { watch } from 'vue'
 
-const emit = defineEmits(["sendSocket"]);
-const props = defineProps(["config"]);
-const start = () => emit("sendSocket", "message", "start");
+const emit = defineEmits(['sendSocket'])
+const props = defineProps(['config'])
+const start = () => emit('sendSocket', 'message', 'start')
 
 const checkUpdate = (n, o) => {
   if (o && n != o) {
-    emit("sendSocket", "config", {
-      category: props.config.category,
+    emit('sendSocket', 'config', {
+      category: parseInt(props.config.category),
       round: props.config.round,
-    });
+    })
   }
-};
+}
 
 watch(
   () => props.config.category,
   (n, o) => checkUpdate(n, o)
-);
+)
 watch(
   () => props.config.round,
   (n, o) => checkUpdate(n, o)
-);
+)
 </script>

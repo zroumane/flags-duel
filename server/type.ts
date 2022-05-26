@@ -1,7 +1,7 @@
-const STATE = ["CONFIG", "PLAYING", "FINISHED"]
+const STATE = ['CONFIG', 'PLAYING', 'FINISHED']
 
 type Duel = {
-  state: "CONFIG" | "PLAYING" | "FINISHED"
+  state: 'CONFIG' | 'PLAYING' | 'FINISHED'
   players: User[]
   round: Round[]
   config: {
@@ -19,10 +19,10 @@ type Country = {
   id: number
   name: string
   continent: string
-  flag_base64: string
+  flag: string
 }
 
 type User = {
   id: string
-  point: number,
+  point: number
 }
