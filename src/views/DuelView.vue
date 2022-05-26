@@ -59,7 +59,9 @@ api(`duel/${id.value}`, 'GET', (data) => {
   } else {
     store.commit(
       'setSocket',
-      io('ws://localhost:3000', { withCredentials: true })
+      io(process.env.NODE_ENV == 'development' ? 'http://localhost:3000' : '', {
+        withCredentials: true,
+      })
     )
 
     socket.value.on('connect', () => {
