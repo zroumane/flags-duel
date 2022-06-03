@@ -25,3 +25,8 @@ yarn start
 ```
 
 or you can use docker
+
+
+# TODO
+* Build a scrapper of https://restcountries.com (name code continent flag link)
+* UX
