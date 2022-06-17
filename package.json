@@ -3,15 +3,19 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "NODE_ENV=development nodemon server/app.js",
-    "watch": "vue-cli-service serve",
-    "start": "vue-cli-service build && node server/app.js"
+    "server:dev": "NODE_ENV=development nodemon server/app.js",
+    "server:prod": "node server/app.js",
+    "client:build": "vue-cli-service build",
+    "client:watch": "vue-cli-service serve",
+    "country": "node country/script.js",
+    "start": "npm run client:build && npm run country && npm run server:prod"
   },
   "dependencies": {
     "connect-history-api-fallback": "^1.6.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express-session": "^1.17.3",
+    "node-fetch": "^3.2.6",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",
     "vue": "^3.2.13",
