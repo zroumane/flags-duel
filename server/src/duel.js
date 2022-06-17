@@ -33,7 +33,7 @@ export default class {
         this.config.round = n.round
       }
       if (
-        n.category &&
+        n.category != undefined &&
         typeof n.category === 'number' &&
         n.category >= 0 &&
         n.category <= 4
