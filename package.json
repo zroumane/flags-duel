@@ -5,8 +5,8 @@
   "scripts": {
     "server:dev": "NODE_ENV=development nodemon server/app.js",
     "server:prod": "node server/app.js",
-    "client:build": "vue-cli-service build",
     "client:watch": "vue-cli-service serve",
+    "client:build": "vue-cli-service build",
     "country": "node country/script.js",
     "start": "npm run client:build && npm run country && npm run server:prod"
   },
