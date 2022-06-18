@@ -46,11 +46,11 @@ const players = computed(() =>
   font-size: 2vh;
 }
 .player {
-  border-radius: 10px;
+  border-radius: 5px;
   display: flex;
   justify-content: space-between;
-  margin: 1vh;
-  padding: 1vh;
+  margin: 0.5vh;
+  padding: 0.5vh;
   background-color: rgba(24, 19, 104);
 }
 </style>

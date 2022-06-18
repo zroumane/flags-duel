@@ -32,12 +32,12 @@ body {
 }
 
 #app {
-  padding: 2vh;
+  padding: 1vh;
 }
 
 #title {
   display: block;
-  font-size: 6vh;
+  font-size: 5vh;
   margin-top: 1vh;
   margin-bottom: 2vh;
   color: white;
@@ -53,7 +53,7 @@ body {
   right: 0;
   bottom: 1vh;
   width: 100%;
-  font-size: 2vh;
+  font-size: 1.5vh;
 }
 
 input[type='text'] {
@@ -99,7 +99,7 @@ a:visited {
 
 .text {
   transition: 0.3s;
-  font-size: 3vh;
+  font-size: 2.5vh;
   margin-top: 1vh;
   margin-bottom: 1vh;
   display: block;

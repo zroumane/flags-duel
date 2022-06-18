@@ -110,22 +110,22 @@ const handleCopy = () => {
 }
 
 #startGame {
-  height: 8vh;
-  font-size: 3vh;
+  height: 7vh;
+  font-size: 2.5vh;
   width: 20%;
   min-width: 150px;
 }
 
 #startGame:hover {
-  font-size: 4vh;
+  font-size: 3vh;
 }
 #startGame:disabled:hover {
-  font-size: 3vh;
+  font-size: 2vh;
 }
 
 #urlField {
   margin-top: 2vh;
-  height: 4vh;
+  height: 3vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -133,8 +133,8 @@ const handleCopy = () => {
 #urlField input[type='text'] {
   height: 100%;
   text-align: center;
-  font-size: 3vh;
-  width: 60vh;
+  font-size: 2vh;
+  width: 50vh;
   max-width: 70%;
   margin-left: 6vh;
   margin-right: 1vh;

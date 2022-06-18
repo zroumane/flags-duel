@@ -94,11 +94,11 @@ socket.value.on('end', () => {
 }
 .countdown {
   font-size: 3vh;
-  margin-top: 1vh;
+  margin-top: 2vh;
 }
 .flag {
   margin-top: 2vh;
-  height: 25vh;
+  height: 22vh;
 }
 
 .choice {
@@ -109,9 +109,10 @@ socket.value.on('end', () => {
 }
 
 .choice input {
-  width: 40vh;
+  width: 60vh;
+  max-width: 90%;
   font-size: 2vh;
-  height: 5vh;
+  height: 4vh;
   margin-top: 1vh;
   border: 0.5vh rgb(24, 21, 161) solid;
   background-color: rgb(24, 19, 104);

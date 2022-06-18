@@ -38,13 +38,13 @@ const result = computed(() => {
 
 <style scoped>
 #restartGame {
-  height: 12vh;
-  font-size: 4vh;
+  height: 10vh;
+  font-size: 3.5vh;
   width: 30%;
   min-width: 300px;
 }
 #restartGame:hover {
-  font-size: 5vh;
+  font-size: 4vh;
 }
 
 div {

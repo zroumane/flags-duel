@@ -89,30 +89,30 @@ const joinGame = (id) => {
 
 <style scoped>
 #newGame {
-  height: 12vh;
-  font-size: 4vh;
-  width: 30%;
+  height: 10vh;
+  font-size: 3vh;
+  width: 25%;
   min-width: 300px;
 }
 #newGame:hover {
-  font-size: 5vh;
+  font-size: 3.5vh;
 }
 
 #joinGame {
   height: 8vh;
-  font-size: 3vh;
-  width: 20%;
+  font-size: 2.5vh;
+  width: 15%;
   min-width: 150px;
 }
 #joinGame:hover {
-  font-size: 4vh;
+  font-size: 3vh;
 }
 #joinGame:disabled:hover {
   font-size: 3vh;
 }
 
 #idField {
-  height: 8vh;
+  height: 7vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -120,8 +120,8 @@ const joinGame = (id) => {
 #idField input[type='text'] {
   height: 100%;
   text-align: center;
-  font-size: 4vh;
-  width: 20vh;
+  font-size: 3vh;
+  width: 16vh;
   margin-left: 6vh;
   margin-right: 1rem;
 }
