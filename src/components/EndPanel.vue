@@ -1,7 +1,12 @@
 <template>
   <div>
-    <h2 v-if="duel.players && duel.players.length == 2">{{ result }}</h2>
-    <input @click="socket.send('restart')" type="submit" value="Restart" />
+    <div v-if="duel.players && duel.players.length == 2">{{ result }}</div>
+    <input
+      id="restartGame"
+      class="gameInput"
+      @click="socket.send('restart')"
+      type="submit"
+      value="Restart" />
   </div>
 </template>
 
@@ -30,3 +35,20 @@ const result = computed(() => {
   return ''
 })
 </script>
+
+<style scoped>
+#restartGame {
+  height: 12vh;
+  font-size: 4vh;
+  width: 30%;
+  min-width: 300px;
+}
+#restartGame:hover {
+  font-size: 5vh;
+}
+
+div {
+  font-size: 4vh;
+  margin-top: 5vh;
+}
+</style>

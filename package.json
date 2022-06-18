@@ -11,10 +11,12 @@
     "start": "npm run client:build && npm run country && npm run server:prod"
   },
   "dependencies": {
+    "base64-js": "^1.5.1",
     "connect-history-api-fallback": "^1.6.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "express-session": "^1.17.3",
+    "js-base64": "^3.7.2",
     "node-fetch": "^3.2.6",
     "socket.io": "^4.5.1",
     "socket.io-client": "^4.5.1",

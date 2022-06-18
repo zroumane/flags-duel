@@ -1,14 +1,17 @@
 <template>
   <div>
-    <div v-if="message">
-      <h2>{{ message }}</h2>
-      <input @click="router.go()" type="button" value="Refresh" />
+    <div class="messageSection" v-if="message">
+      <span class="text">{{ message }}</span>
+      <a class="text" :href="router.resolve({ name: 'duel' }).href">
+        Refresh
+      </a>
+      <router-link class="text" :to="{ name: 'home' }">Home</router-link>
     </div>
     <div v-else>
       <h2 v-if="!duel.state">Loading ...</h2>
       <div v-else>
         <div v-if="duel.state == 'CONFIG'">
-          <ConfigPanel />
+          <ConfigPanel :id="id" />
         </div>
         <div v-else-if="duel.state == 'PLAYING'">
           <ScoreBoard />
@@ -99,13 +102,10 @@ onBeforeRouteLeave(() => {
 </script>
 
 <style scoped>
-div {
-  margin: 1rem 0 1rem 0;
-  width: 100%;
-  text-align: center;
-}
-input {
-  margin: 5px;
+.messageSection {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .error {

@@ -1,10 +1,15 @@
 <template>
   <div>
-    <div>{{ countdown || 'Waiting ...' }}</div>
-    <div v-if="flag">
-      <div class="flag">
-        <img v-if="flag" :src="flag" />
+    <div class="status" v-if="status">{{ status }}</div>
+    <div class="countdown">
+      <div v-if="countdown">
+        <span v-if="!choosing">Next round will start in</span>
+        {{ countdown }}
       </div>
+      <div v-else>Waiting ...</div>
+    </div>
+    <div v-if="flag">
+      <img class="flag" :src="flag" />
       <div class="choice">
         <input
           v-for="(c, i) in choices"
@@ -14,6 +19,7 @@
           v-model="c.name"
           :disabled="isAnswer"
           :class="{
+            choose: choice == i,
             wrong: !choosing && answer != i && choice == i,
             answer: !choosing && answer == i,
           }" />
@@ -23,14 +29,13 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
 
 const socket = computed(() => store.state.socket)
 
-// const answer = ref(false)
 const choosing = ref(false)
 const isAnswer = ref(false)
 const countdown = ref(null)
@@ -38,6 +43,8 @@ const choices = ref([])
 const choice = ref(null)
 const flag = ref(null)
 const answer = ref(null)
+
+const status = ref(null)
 
 let interval
 
@@ -59,7 +66,8 @@ socket.value.on('question', (data) => {
   choice.value = null
   isAnswer.value = false
   choosing.value = true
-  flag.value = data.flag
+  status.value = data.status
+  flag.value = 'data:image/png;base64,' + data.flag
   choices.value = data.choices
   countdown.value = data.time
   interval = setInterval(() => (countdown.value -= 1), 1000)
@@ -80,23 +88,55 @@ socket.value.on('end', () => {
 </script>
 
 <style scoped>
+.status {
+  font-size: 2vh;
+  margin-top: 2vh;
+}
+.countdown {
+  font-size: 3vh;
+  margin-top: 1vh;
+}
 .flag {
-  width: 500px;
-  width: 300px;
-  margin: 0 auto;
-  border: 1px black solid;
+  margin-top: 2vh;
+  height: 25vh;
 }
 
-img {
-  width: 100%;
-  height: 100%;
+.choice {
+  margin-top: 2vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.choice input {
+  width: 40vh;
+  font-size: 2vh;
+  height: 5vh;
+  margin-top: 1vh;
+  border: 0.5vh rgb(24, 21, 161) solid;
+  background-color: rgb(24, 19, 104);
+  color: white;
+  border-radius: 1vh;
+  transition: 0.3s ease-in-out;
+}
+
+.choice input.choose {
+  background-color: rgb(24, 21, 161);
+}
+
+.choice input:disabled {
+  opacity: 0.7;
 }
 
 .answer {
-  background-color: greenyellow;
+  background-color: #719a31 !important;
+  border: 0.5vh #719a31 !important;
+  opacity: 1 !important;
 }
 
 .wrong {
-  background-color: red;
+  background-color: red !important;
+  border: 0.5vh red solid !important;
+  opacity: 1 !important;
 }
 </style>

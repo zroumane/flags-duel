@@ -103,6 +103,9 @@ export default class {
           time: ROUND_TIME,
           flag: flags[this.rounds[0].country.code],
           choices: this.rounds[0].choices,
+          status: `${this.config.round - this.rounds.length + 1}/${
+            this.config.round
+          }`,
         })
         this.timeout = setTimeout(() => this.end(), ROUND_TIME * 1000)
       }, PREPARE_TIME * 1000)
