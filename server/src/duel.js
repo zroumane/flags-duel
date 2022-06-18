@@ -101,7 +101,7 @@ export default class {
         this.answering = true
         io.to(this.id).emit('question', {
           time: ROUND_TIME,
-          flag: flags[this.rounds[0].country.id],
+          flag: flags[this.rounds[0].country.code],
           choices: this.rounds[0].choices,
         })
         this.timeout = setTimeout(() => this.end(), ROUND_TIME * 1000)

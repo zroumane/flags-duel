@@ -1,6 +1,7 @@
+import continents from '../continents.json' assert { type: 'json' }
 import countries from '../countries.json' assert { type: 'json' }
 
-const category = ['Africa', 'America', 'Asia', 'Europe']
+const mapping = Object.values(continents)
 
 const shuffle = (arr) => {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -9,24 +10,19 @@ const shuffle = (arr) => {
   }
 }
 
-const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+const random = ([min, max]) => Math.floor(Math.random() * (max - min + 1) + min)
 
 export default (config) => {
   let rounds = []
-  let selection =
-    config.category == 0
-      ? countries
-      : countries.filter((c) => c.continent == category[config.category - 1])
-
   for (let i = 0; i < config.round; i++) {
-    let country = selection[Math.floor(Math.random() * selection.length)]
+    let country = countries[random(mapping[config.category])]
     if (rounds.find((r) => r.country == country)) {
       i--
       continue
     } else {
       let choices = [country]
       for (let o = 0; o < 3; o++) {
-        let choice = selection[Math.floor(Math.random() * selection.length)]
+        let choice = countries[random(mapping[config.category])]
         if (choices.includes(choice) || country == choice) {
           o--
           continue
