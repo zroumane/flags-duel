@@ -1,6 +1,6 @@
 # flags-duel
 
-A duel game where you have to find the country associated with a flag. You can play it on [Flags Duel](https://flags-duel.zph.ovh).
+A duel game where you have to find the country associated with a flag. You can play it on [Flags Duel](https://flags.zph.ovh).
 
 ## Usage
 
@@ -11,22 +11,17 @@ yarn install
 ### Development
 
 ```
-# server side (Express.js)
-yarn dev
+# server side (Express.js + Socket.io)
+yarn run server:dev
 
 # client side (Vue.js + Router)
-yarn watch
+yarn run client:watch
 ```
 
 ### Production
 
 ```
-yarn start
+yarn run build
+yarn run country
+forever start src/app.js
 ```
-
-or you can use docker
-
-
-# TODO
-* Build a scrapper of https://restcountries.com (name code continent flag link)
-* UX
