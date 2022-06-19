@@ -5,7 +5,7 @@
     </div>
     <router-view />
     <div id="footer">
-      Build with 💜 by
+      Made with 💜 by
       <a href="https://github.com/zroumane" target="_blank">Zephyr</a>
     </div>
   </div>
