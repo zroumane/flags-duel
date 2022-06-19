@@ -1,6 +1,5 @@
 <template>
   <div>
-    <router-link class="text" :to="{ name: 'home' }">Home</router-link>
     <div class="text">Duel : {{ id }}</div>
     <div id="urlField">
       <input type="text" v-model="url" @click="selfSelect" />

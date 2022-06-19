@@ -11,6 +11,8 @@
       <h2 v-if="!duel.state">Loading ...</h2>
       <div v-else>
         <div v-if="duel.state == 'CONFIG'">
+          <router-link class="text" :to="{ name: 'home' }">Home</router-link>
+
           <ConfigPanel :id="id" />
         </div>
         <div v-else-if="duel.state == 'PLAYING'">
@@ -18,6 +20,7 @@
           <QuestionPanel />
         </div>
         <div v-else-if="duel.state == 'FINISHED'">
+          <router-link class="text" :to="{ name: 'home' }">Home</router-link>
           <EndPanel />
         </div>
       </div>

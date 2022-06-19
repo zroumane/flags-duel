@@ -82,8 +82,6 @@ socket.value.on('answer', (a) => {
 socket.value.on('end', () => {
   clearInterval(interval)
   countdown.value = null
-  choices.value = []
-  flag.value = null
 })
 </script>
 
