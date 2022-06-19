@@ -114,7 +114,10 @@ export default class {
 
   end() {
     clearTimeout(this.timeout)
-    io.emit('answer', this.rounds[0].choices.indexOf(this.rounds[0].country))
+    io.to(this.id).emit(
+      'answer',
+      this.rounds[0].choices.indexOf(this.rounds[0].country)
+    )
     this.rounds.shift()
     this.instance()
   }
